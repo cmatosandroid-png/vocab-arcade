@@ -2092,19 +2092,39 @@ const WORD_LIST = [
   let gainNode = null;
 
   let voices = [];
+  function scoreVoice(v){
+    const name = (v.name || '').toLowerCase();
+    let score = 0;
+    if (/natural/.test(name)) score += 100;
+    if (/neural|online|google/.test(name)) score += 80;
+    if (/microsoft/.test(name)) score += 50;
+    if (/enhanced|wavenet/.test(name)) score += 40;
+    if (/google us english|en-us.*natural/.test(name)) score += 30;
+    if (/en-us|en_gb|en-au|en-ca/.test(v.lang || '')) score += 15;
+    return score;
+  }
+  function getEnglishVoices(){
+    const all = speechSynthesis.getVoices();
+    return all.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  }
   function loadVoices(){
-    voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
-    if (voices.length === 0) voices = speechSynthesis.getVoices();
+    const eng = getEnglishVoices();
+    voices = (eng.length ? eng : speechSynthesis.getVoices()).slice().sort((a, b) => scoreVoice(b) - scoreVoice(a));
     voiceSelect.innerHTML = '';
     voices.forEach((v, i) => {
       const opt = document.createElement('option');
       opt.value = i;
-      opt.textContent = `${v.name} (${v.lang})`;
+      opt.textContent = `${v.name} (${v.lang})${scoreVoice(v) > 0 ? ' ★' : ''}`;
       voiceSelect.appendChild(opt);
     });
+    if (voices.length === 0){
+      statusEl.textContent = 'Tu navegador no tiene voces en inglés. Prueba con Chrome o Edge.';
+    }
   }
-  speechSynthesis.onvoiceschanged = loadVoices;
-  loadVoices();
+  if (speechSynthesis){
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+  }
 
   songInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
@@ -2217,25 +2237,55 @@ const WORD_LIST = [
 
   let lastSpokenIdx = -1;
   let lastSpokenStage = -1;
+  let speakTimer = null;
+  let speakLock = false;
+
+  function duckMusic(duration){
+    if (!gainNode || !audioCtx) return;
+    const now = audioCtx.currentTime;
+    gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+    gainNode.gain.linearRampToValueAtTime(0.12, now + 0.15);
+    gainNode.gain.linearRampToValueAtTime(0.5, now + Math.max(0.4, duration));
+  }
+
+  function speakWord(en){
+    if (!('speechSynthesis' in window) || !('speak' in speechSynthesis)) return;
+    const utter = new SpeechSynthesisUtterance(en);
+    const vi = parseInt(voiceSelect.value || '0', 10);
+    if (voices[vi]){
+      utter.voice = voices[vi];
+      utter.lang = voices[vi].lang;
+    } else {
+      utter.lang = 'en-US';
+    }
+    utter.rate = 0.9;
+    utter.pitch = 1.0;
+    utter.volume = 1.0;
+    if (speakLock) return;
+    speakLock = true;
+    speechSynthesis.cancel();
+    // pequeño retardo: evita el bug conocido de Chrome donde cancel()+speak() se traga la palabra
+    speakTimer = setTimeout(() => {
+      speechSynthesis.speak(utter);
+      speakLock = false;
+    }, 70);
+    utter.onend = () => { speakLock = false; };
+    utter.onerror = () => { speakLock = false; };
+  }
+
+  function flushSpeech(){
+    if (speakTimer){ clearTimeout(speakTimer); speakTimer = null; }
+    speakLock = false;
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+  }
 
   function speakIfNeeded(word, stage, idx){
     if (stage === 2 && (idx !== lastSpokenIdx || lastSpokenStage !== 2)){
       lastSpokenIdx = idx;
       lastSpokenStage = 2;
-      const utter = new SpeechSynthesisUtterance(word.en);
-      const vi = parseInt(voiceSelect.value || '0', 10);
-      if (voices[vi]) utter.voice = voices[vi];
-      utter.rate = 0.85;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utter);
-
-      if (gainNode){
-        const now = audioCtx.currentTime;
-        gainNode.gain.cancelScheduledValues(now);
-        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-        gainNode.gain.linearRampToValueAtTime(0.12, now + 0.15);
-        gainNode.gain.linearRampToValueAtTime(0.5, now + 1.0);
-      }
+      speakWord(word.en);
+      duckMusic(1.1);
     }
     if (stage !== 2){
       lastSpokenStage = stage;
@@ -2291,7 +2341,7 @@ const WORD_LIST = [
   function stopPlayback(){
     state.running = false;
     stopSong();
-    speechSynthesis.cancel();
+    flushSpeech();
     playBtn.disabled = false;
     pauseBtn.disabled = true;
   }
