@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OASIS Vocab Arcade — Verbos -ed de Ready Player One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0a0416;
+    --bg-panel:#150a29;
+    --neon-magenta:#ff2fd0;
+    --neon-cyan:#2ff6ff;
+    --neon-yellow:#ffe94a;
+    --line:#3a1f5c;
+    --text-dim:#a691c9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:
+      radial-gradient(ellipse at 50% -10%, #2a1150 0%, var(--bg-deep) 55%),
+      var(--bg-deep);
+    color:#f2eaff;
+    font-family:'Space Mono', monospace;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:28px 16px 60px;
+    min-height:100%;
+  }
+  .eyebrow{
+    font-family:'Press Start 2P', monospace;
+    font-size:10px;
+    letter-spacing:2px;
+    color:var(--neon-cyan);
+    text-shadow:0 0 8px rgba(47,246,255,0.6);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Press Start 2P', monospace;
+    font-size:clamp(16px,4vw,26px);
+    text-align:center;
+    margin:0 0 4px;
+    color:#fff;
+    text-shadow:0 0 12px var(--neon-magenta), 0 0 30px rgba(255,47,208,0.4);
+    letter-spacing:1px;
+  }
+  .sub{
+    color:var(--text-dim);
+    font-size:15px;
+    text-align:center;
+    max-width:520px;
+    margin-bottom:28px;
+    line-height:1.6;
+  }
+
+  .layout{
+    display:flex;
+    gap:28px;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-start;
+    width:100%;
+    max-width:960px;
+  }
+
+  .stage-wrap{
+    position:relative;
+    flex-shrink:0;
+  }
+  .stage-frame{
+    border:3px solid var(--neon-cyan);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.6),
+      0 0 24px rgba(47,246,255,0.35),
+      inset 0 0 40px rgba(255,47,208,0.08);
+    border-radius:4px;
+    overflow:hidden;
+    background:#000;
+  }
+  canvas#stage{
+    display:block;
+    width:270px;
+    height:480px;
+  }
+  .counter{
+    position:absolute;
+    top:-14px;
+    right:10px;
+    background:var(--bg-deep);
+    border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow);
+    font-family:'Press Start 2P', monospace;
+    font-size:10px;
+    padding:4px 8px;
+    border-radius:3px;
+    text-shadow:0 0 6px rgba(255,233,74,0.7);
+  }
+
+  .panel{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:20px;
+    width:340px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .field label{
+    font-size:13px;
+    color:var(--neon-cyan);
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .hint{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+  input[type="file"], select, input[type="number"]{
+    background:#0d0620;
+    border:1px solid var(--line);
+    color:#f2eaff;
+    padding:8px 10px;
+    border-radius:4px;
+    font-family:'Space Mono', monospace;
+    font-size:14px;
+  }
+  select:focus, input:focus{
+    outline:2px solid var(--neon-magenta);
+    outline-offset:1px;
+  }
+  .row{
+    display:flex;
+    gap:10px;
+  }
+  .row .field{flex:1;}
+
+  button{
+    font-family:'Press Start 2P', monospace;
+    font-size:12px;
+    padding:12px 14px;
+    border-radius:4px;
+    border:2px solid var(--neon-magenta);
+    background:transparent;
+    color:var(--neon-magenta);
+    cursor:pointer;
+    letter-spacing:1px;
+    transition:transform .08s ease, box-shadow .15s ease;
+  }
+  button:hover{
+    box-shadow:0 0 14px rgba(255,47,208,0.6);
+  }
+  button:active{transform:translateY(1px);}
+  button:disabled{
+    opacity:0.35;
+    cursor:not-allowed;
+    box-shadow:none;
+  }
+  button.primary{
+    border-color:var(--neon-cyan);
+    color:var(--neon-cyan);
+  }
+  button.primary:hover{
+    box-shadow:0 0 14px rgba(47,246,255,0.6);
+  }
+  .btn-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .status{
+    font-size:13px;
+    color:var(--text-dim);
+    border-top:1px dashed var(--line);
+    padding-top:12px;
+    line-height:1.6;
+  }
+  .status b{color:var(--neon-yellow);}
+
+  .instructions{
+    max-width:960px;
+    width:100%;
+    margin-top:30px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:20px 24px;
+    font-size:13px;
+    line-height:1.7;
+    color:#d9cdf2;
+  }
+  .instructions h2{
+    font-family:'Press Start 2P', monospace;
+    font-size:13px;
+    color:var(--neon-yellow);
+    margin-top:0;
+  }
+  .instructions ol{padding-left:20px;}
+  .instructions code{
+    background:#0d0620;
+    padding:1px 5px;
+    border-radius:3px;
+    color:var(--neon-cyan);
+  }
+</style>
+</head>
+<body>
+
+  <div class="eyebrow">// OASIS TRAINING MODULE</div>
+  <h1>VOCAB ARCADE</h1>
+  <p class="sub">235 verbos en pasado de <em>Ready Player One</em> (cap. 1-3) — inglés → español → pronunciación, sincronizados a tu música.</p>
+
+  <div class="layout">
+    <div class="stage-wrap">
+      <div class="counter" id="counter">000 / 235</div>
+      <div class="stage-frame">
+        <canvas id="stage" width="1080" height="1920"></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+
+      <div class="field">
+        <label>1. Música de fondo (tu archivo, con licencia)</label>
+        <input type="file" id="songInput" accept="audio/*">
+        <div class="hint">Sube tu propio mp3/wav de "Beggin'". No se incluye ni se descarga ninguna canción aquí.</div>
+      </div>
+
+      <div class="field">
+        <label>2. Voz para pronunciar en inglés</label>
+        <select id="voiceSelect"></select>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>BPM</label>
+          <input type="number" id="bpmInput" value="129" min="40" max="220">
+        </div>
+        <div class="field">
+          <label>Beats / pantalla</label>
+          <input type="number" id="beatsInput" value="2" min="1" max="8">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="primary" id="playBtn">▶ REPRODUCIR</button>
+        <button id="pauseBtn" disabled>⏸ PAUSAR</button>
+        <button id="resetBtn">⟲ REINICIAR</button>
+      </div>
+
+      <div class="status" id="status">
+        Listo. Sube tu música, elige una voz en inglés y dale a <b>REPRODUCIR</b> para previsualizar.
+      </div>
+    </div>
+  </div>
+
+<script>
+const WORD_LIST = [
+  {
+    "en": "called",
+    "es": "llamado",
+    "pron": "kOld",
+    "freq": 11
+  },
+  {
+    "en": "used",
+    "es": "usado",
+    "pron": "iUsd",
+    "freq": 11
+  },
+  {
+    "en": "started",
+    "es": "empezado",
+    "pron": "stArtid",
+    "freq": 10
+  },
+  {
+    "en": "turned",
+    "es": "girado",
+    "pron": "tERnd",
+    "freq": 10
+  },
+  {
+    "en": "wanted",
+    "es": "querido",
+    "pron": "uOntid",
+    "freq": 9
+  },
+  {
+    "en": "lived",
+    "es": "vivido",
+    "pron": "lIvd",
+    "freq": 8
+  },
+  {
+    "en": "covered",
+    "es": "cubierto",
+    "pron": "kAverd",
+    "freq": 7
+  },
+  {
+    "en": "looked",
+    "es": "mirado",
+    "pron": "lUkt",
+    "freq": 7
+  },
+  {
+    "en": "pulled",
+    "es": "jalado",
+    "pron": "pUld",
+    "freq": 7
+  },
+  {
+    "en": "walked",
+    "es": "caminado",
+    "pron": "uOkt",
+    "freq": 7
+  },
+  {
+    "en": "appeared",
+    "es": "aparecido",
+    "pron": "apIrd",
+    "freq": 6
+  },
+  {
+    "en": "closed",
+    "es": "cerrado",
+    "pron": "klOUsd",
+    "freq": 6
+  },
+  {
+    "en": "created",
+    "es": "creado",
+    "pron": "kriEItad",
+    "freq": 6
+  },
+  {
+    "en": "logged",
+    "es": "registrado",
+    "pron": "lOgd",
+    "freq": 6
+  },
+  {
+    "en": "played",
+    "es": "jugado",
+    "pron": "plEId",
+    "freq": 6
+  },
+  {
+    "en": "reached",
+    "es": "alcanzado",
+    "pron": "rIcht",
+    "freq": 6
+  },
+  {
+    "en": "seemed",
+    "es": "parecido",
+    "pron": "sImd",
+    "freq": 6
+  },
+  {
+    "en": "continued",
+    "es": "continuado",
+    "pron": "kantIniud",
+    "freq": 5
+  },
+  {
+    "en": "discovered",
+    "es": "descubierto",
+    "pron": "diskAverd",
+    "freq": 5
+  },
+  {
+    "en": "liked",
+    "es": "gustado",
+    "pron": "lAIkt",
+    "freq": 5
+  },
+  {
+    "en": "loved",
+    "es": "amado",
+    "pron": "lAvd",
+    "freq": 5
+  },
+  {
+    "en": "named",
+    "es": "nombrado",
+    "pron": "nEImd",
+    "freq": 5
+  },
+  {
+    "en": "required",
+    "es": "requerido",
+    "pron": "rikuAIerd",
+    "freq": 5
+  },
+  {
+    "en": "selected",
+    "es": "seleccionado",
+    "pron": "salEktid",
+    "freq": 5
+  },
+  {
+    "en": "tapped",
+    "es": "golpeteado suavemente",
+    "pron": "tApt",
+    "freq": 5
+  },
+  {
+    "en": "watched",
+    "es": "observado",
+    "pron": "uAcht",
+    "freq": 5
+  },
+  {
+    "en": "abandoned",
+    "es": "abandonado",
+    "pron": "abAndand",
+    "freq": 4
+  },
+  {
+    "en": "buried",
+    "es": "enterrado",
+    "pron": "bErid",
+    "freq": 4
+  },
+  {
+    "en": "crushed",
+    "es": "aplastado",
+    "pron": "krAsht",
+    "freq": 4
+  },
+  {
+    "en": "died",
+    "es": "muerto",
+    "pron": "dAId",
+    "freq": 4
+  },
+  {
+    "en": "dropped",
+    "es": "dejado caer",
+    "pron": "drApt",
+    "freq": 4
+  },
+  {
+    "en": "followed",
+    "es": "seguido",
+    "pron": "fAloud",
+    "freq": 4
+  },
+  {
+    "en": "happened",
+    "es": "sucedido",
+    "pron": "jApand",
+    "freq": 4
+  },
+  {
+    "en": "posted",
+    "es": "publicado",
+    "pron": "pOUstid",
+    "freq": 4
+  },
+  {
+    "en": "stacked",
+    "es": "apilado",
+    "pron": "stAkt",
+    "freq": 4
+  },
+  {
+    "en": "tried",
+    "es": "intentado",
+    "pron": "trAId",
+    "freq": 4
+  },
+  {
+    "en": "allowed",
+    "es": "permitido",
+    "pron": "alAUd",
+    "freq": 3
+  },
+  {
+    "en": "asked",
+    "es": "preguntado",
+    "pron": "Askt",
+    "freq": 3
+  },
+  {
+    "en": "attended",
+    "es": "asistido",
+    "pron": "atEndid",
+    "freq": 3
+  },
+  {
+    "en": "believed",
+    "es": "creído",
+    "pron": "bilIvd",
+    "freq": 3
+  },
+  {
+    "en": "consisted",
+    "es": "consistido (en)",
+    "pron": "kansIstad",
+    "freq": 3
+  },
+  {
+    "en": "decided",
+    "es": "decidido",
+    "pron": "disAIdid",
+    "freq": 3
+  },
+  {
+    "en": "directed",
+    "es": "dirigido",
+    "pron": "derEktad",
+    "freq": 3
+  },
+  {
+    "en": "downloaded",
+    "es": "descargado",
+    "pron": "dAUnloudid",
+    "freq": 3
+  },
+  {
+    "en": "figured",
+    "es": "calculado",
+    "pron": "fIgierd",
+    "freq": 3
+  },
+  {
+    "en": "filled",
+    "es": "llenado",
+    "pron": "fIld",
+    "freq": 3
+  },
+  {
+    "en": "glanced",
+    "es": "echado un vistazo",
+    "pron": "glAnst",
+    "freq": 3
+  },
+  {
+    "en": "grabbed",
+    "es": "agarrado",
+    "pron": "grAbd",
+    "freq": 3
+  },
+  {
+    "en": "grinned",
+    "es": "sonreído (ampliamente)",
+    "pron": "grInd",
+    "freq": 3
+  },
+  {
+    "en": "helped",
+    "es": "ayudado",
+    "pron": "jElpt",
+    "freq": 3
+  },
+  {
+    "en": "limited",
+    "es": "limitado",
+    "pron": "lImatad",
+    "freq": 3
+  },
+  {
+    "en": "lowered",
+    "es": "bajado",
+    "pron": "lOUerd",
+    "freq": 3
+  },
+  {
+    "en": "mixed",
+    "es": "mezclado",
+    "pron": "mIkst",
+    "freq": 3
+  },
+  {
+    "en": "needed",
+    "es": "necesitado",
+    "pron": "nIdad",
+    "freq": 3
+  },
+  {
+    "en": "opened",
+    "es": "abierto",
+    "pron": "OUpand",
+    "freq": 3
+  },
+  {
+    "en": "organized",
+    "es": "organizado",
+    "pron": "Organaisd",
+    "freq": 3
+  },
+  {
+    "en": "owned",
+    "es": "poseído",
+    "pron": "OUnd",
+    "freq": 3
+  },
+  {
+    "en": "peeked",
+    "es": "espiado",
+    "pron": "pIkt",
+    "freq": 3
+  },
+  {
+    "en": "programmed",
+    "es": "programado",
+    "pron": "prOUgramd",
+    "freq": 3
+  },
+  {
+    "en": "pronounced",
+    "es": "pronunciado",
+    "pron": "pranAUnst",
+    "freq": 3
+  },
+  {
+    "en": "raised",
+    "es": "levantado",
+    "pron": "rEIsd",
+    "freq": 3
+  },
+  {
+    "en": "recognized",
+    "es": "reconocido",
+    "pron": "rEkagnaisd",
+    "freq": 3
+  },
+  {
+    "en": "referred",
+    "es": "referido",
+    "pron": "rafERd",
+    "freq": 3
+  },
+  {
+    "en": "released",
+    "es": "liberado",
+    "pron": "rilIst",
+    "freq": 3
+  },
+  {
+    "en": "rested",
+    "es": "descansado",
+    "pron": "rEstad",
+    "freq": 3
+  },
+  {
+    "en": "shouted",
+    "es": "gritado",
+    "pron": "shAUtid",
+    "freq": 3
+  },
+  {
+    "en": "sucked",
+    "es": "apestado",
+    "pron": "sAkt",
+    "freq": 3
+  },
+  {
+    "en": "added",
+    "es": "añadido",
+    "pron": "Adad",
+    "freq": 2
+  },
+  {
+    "en": "answered",
+    "es": "respondido",
+    "pron": "Anserd",
+    "freq": 2
+  },
+  {
+    "en": "arrived",
+    "es": "llegado",
+    "pron": "erAIvd",
+    "freq": 2
+  },
+  {
+    "en": "assumed",
+    "es": "asumido",
+    "pron": "asUmd",
+    "freq": 2
+  },
+  {
+    "en": "bumped",
+    "es": "golpeado",
+    "pron": "bAmpt",
+    "freq": 2
+  },
+  {
+    "en": "busted",
+    "es": "atrapado",
+    "pron": "bAstid",
+    "freq": 2
+  },
+  {
+    "en": "canceled",
+    "es": "cancelado",
+    "pron": "kAnsald",
+    "freq": 2
+  },
+  {
+    "en": "cleared",
+    "es": "despejado",
+    "pron": "klIrd",
+    "freq": 2
+  },
+  {
+    "en": "climbed",
+    "es": "subido",
+    "pron": "klAImd",
+    "freq": 2
+  },
+  {
+    "en": "completed",
+    "es": "completado",
+    "pron": "kamplItad",
+    "freq": 2
+  },
+  {
+    "en": "conducted",
+    "es": "realizado",
+    "pron": "kandAktad",
+    "freq": 2
+  },
+  {
+    "en": "depressed",
+    "es": "deprimido",
+    "pron": "diprEst",
+    "freq": 2
+  },
+  {
+    "en": "descended",
+    "es": "descendido",
+    "pron": "disEndad",
+    "freq": 2
+  },
+  {
+    "en": "designed",
+    "es": "diseñado",
+    "pron": "disAInd",
+    "freq": 2
+  },
+  {
+    "en": "devoted",
+    "es": "dedicado",
+    "pron": "divOUtid",
+    "freq": 2
+  },
+  {
+    "en": "dumped",
+    "es": "tirado",
+    "pron": "dAmpt",
+    "freq": 2
+  },
+  {
+    "en": "elicited",
+    "es": "provocado",
+    "pron": "ilIsitid",
+    "freq": 2
+  },
+  {
+    "en": "engaged",
+    "es": "comprometido",
+    "pron": "engEIyd",
+    "freq": 2
+  },
+  {
+    "en": "enrolled",
+    "es": "inscrito",
+    "pron": "enrOUld",
+    "freq": 2
+  },
+  {
+    "en": "entered",
+    "es": "entrado",
+    "pron": "Enterd",
+    "freq": 2
+  },
+  {
+    "en": "evolved",
+    "es": "evolucionado",
+    "pron": "ivAlvd",
+    "freq": 2
+  },
+  {
+    "en": "eyed",
+    "es": "observado",
+    "pron": "AId",
+    "freq": 2
+  },
+  {
+    "en": "failed",
+    "es": "fallado",
+    "pron": "fEIld",
+    "freq": 2
+  },
+  {
+    "en": "finished",
+    "es": "terminado",
+    "pron": "fInisht",
+    "freq": 2
+  },
+  {
+    "en": "flashed",
+    "es": "destellado",
+    "pron": "flAsht",
+    "freq": 2
+  },
+  {
+    "en": "flooded",
+    "es": "inundado",
+    "pron": "flAdad",
+    "freq": 2
+  },
+  {
+    "en": "gazed",
+    "es": "mirado fijamente",
+    "pron": "gEIsd",
+    "freq": 2
+  },
+  {
+    "en": "granted",
+    "es": "concedido",
+    "pron": "grAntad",
+    "freq": 2
+  },
+  {
+    "en": "headed",
+    "es": "dirigido",
+    "pron": "jEdad",
+    "freq": 2
+  },
+  {
+    "en": "horrified",
+    "es": "horrorizado",
+    "pron": "jOrafaid",
+    "freq": 2
+  },
+  {
+    "en": "ignored",
+    "es": "ignorado",
+    "pron": "ignOrd",
+    "freq": 2
+  },
+  {
+    "en": "invited",
+    "es": "invitado",
+    "pron": "invAItad",
+    "freq": 2
+  },
+  {
+    "en": "issued",
+    "es": "emitido",
+    "pron": "Ishud",
+    "freq": 2
+  },
+  {
+    "en": "joined",
+    "es": "unido",
+    "pron": "yOInd",
+    "freq": 2
+  },
+  {
+    "en": "locked",
+    "es": "cerrado con llave",
+    "pron": "lAkt",
+    "freq": 2
+  },
+  {
+    "en": "managed",
+    "es": "logrado",
+    "pron": "mAnayd",
+    "freq": 2
+  },
+  {
+    "en": "materialized",
+    "es": "materializado",
+    "pron": "matIrialaisd",
+    "freq": 2
+  },
+  {
+    "en": "mentioned",
+    "es": "mencionado",
+    "pron": "mEnshand",
+    "freq": 2
+  },
+  {
+    "en": "mounted",
+    "es": "montado",
+    "pron": "mAUntad",
+    "freq": 2
+  },
+  {
+    "en": "muted",
+    "es": "silenciado",
+    "pron": "miUtid",
+    "freq": 2
+  },
+  {
+    "en": "occupied",
+    "es": "ocupado",
+    "pron": "Akiapaid",
+    "freq": 2
+  },
+  {
+    "en": "operated",
+    "es": "operado",
+    "pron": "Apereitad",
+    "freq": 2
+  },
+  {
+    "en": "passed",
+    "es": "pasado",
+    "pron": "pAst",
+    "freq": 2
+  },
+  {
+    "en": "piled",
+    "es": "apilado",
+    "pron": "pAIld",
+    "freq": 2
+  },
+  {
+    "en": "plugged",
+    "es": "enchufado",
+    "pron": "plAgd",
+    "freq": 2
+  },
+  {
+    "en": "popped",
+    "es": "reventado",
+    "pron": "pApt",
+    "freq": 2
+  },
+  {
+    "en": "powdered",
+    "es": "empolvado",
+    "pron": "pAUderd",
+    "freq": 2
+  },
+  {
+    "en": "powered",
+    "es": "encendido",
+    "pron": "pAUerd",
+    "freq": 2
+  },
+  {
+    "en": "preferred",
+    "es": "preferido",
+    "pron": "prafERd",
+    "freq": 2
+  },
+  {
+    "en": "provided",
+    "es": "proporcionado",
+    "pron": "pravAIdid",
+    "freq": 2
+  },
+  {
+    "en": "recited",
+    "es": "recitado",
+    "pron": "rasAItid",
+    "freq": 2
+  },
+  {
+    "en": "remained",
+    "es": "permanecido",
+    "pron": "rimEInd",
+    "freq": 2
+  },
+  {
+    "en": "reminded",
+    "es": "recordado (a alguien)",
+    "pron": "rimAIndid",
+    "freq": 2
+  },
+  {
+    "en": "replied",
+    "es": "respondido",
+    "pron": "riplAId",
+    "freq": 2
+  },
+  {
+    "en": "rigged",
+    "es": "amañado",
+    "pron": "rIgd",
+    "freq": 2
+  },
+  {
+    "en": "saved",
+    "es": "guardado",
+    "pron": "sEIvd",
+    "freq": 2
+  },
+  {
+    "en": "scanned",
+    "es": "escaneado",
+    "pron": "skAnd",
+    "freq": 2
+  },
+  {
+    "en": "scattered",
+    "es": "esparcido",
+    "pron": "skAterd",
+    "freq": 2
+  },
+  {
+    "en": "scowled",
+    "es": "fruncido el ceño",
+    "pron": "skAUld",
+    "freq": 2
+  },
+  {
+    "en": "shrugged",
+    "es": "encogido de hombros",
+    "pron": "shrAgd",
+    "freq": 2
+  },
+  {
+    "en": "slipped",
+    "es": "resbalado",
+    "pron": "slIpt",
+    "freq": 2
+  },
+  {
+    "en": "smiled",
+    "es": "sonreído",
+    "pron": "smAIld",
+    "freq": 2
+  },
+  {
+    "en": "snaked",
+    "es": "serpenteado",
+    "pron": "SNEIKt",
+    "freq": 2
+  },
+  {
+    "en": "snatched",
+    "es": "arrebatado",
+    "pron": "snAcht",
+    "freq": 2
+  },
+  {
+    "en": "spotted",
+    "es": "visto (detectado)",
+    "pron": "spAtid",
+    "freq": 2
+  },
+  {
+    "en": "stored",
+    "es": "almacenado",
+    "pron": "stOrd",
+    "freq": 2
+  },
+  {
+    "en": "stretched",
+    "es": "estirado",
+    "pron": "strEcht",
+    "freq": 2
+  },
+  {
+    "en": "supposed",
+    "es": "supuesto",
+    "pron": "sapOUsd",
+    "freq": 2
+  },
+  {
+    "en": "suspended",
+    "es": "suspendido",
+    "pron": "saspEndid",
+    "freq": 2
+  },
+  {
+    "en": "tired",
+    "es": "cansado",
+    "pron": "tAIerd",
+    "freq": 2
+  },
+  {
+    "en": "verified",
+    "es": "verificado",
+    "pron": "vErafaid",
+    "freq": 2
+  },
+  {
+    "en": "accepted",
+    "es": "aceptado",
+    "pron": "aksEptid",
+    "freq": 1
+  },
+  {
+    "en": "accessed",
+    "es": "accedido",
+    "pron": "Aksest",
+    "freq": 1
+  },
+  {
+    "en": "acquired",
+    "es": "adquirido",
+    "pron": "akuAIerd",
+    "freq": 1
+  },
+  {
+    "en": "addicted",
+    "es": "adicto",
+    "pron": "adIktid",
+    "freq": 1
+  },
+  {
+    "en": "advised",
+    "es": "aconsejado",
+    "pron": "advAIsd",
+    "freq": 1
+  },
+  {
+    "en": "afforded",
+    "es": "costeado",
+    "pron": "afOrdad",
+    "freq": 1
+  },
+  {
+    "en": "aged",
+    "es": "envejecido",
+    "pron": "EIyd",
+    "freq": 1
+  },
+  {
+    "en": "agreed",
+    "es": "acordado",
+    "pron": "agrId",
+    "freq": 1
+  },
+  {
+    "en": "announced",
+    "es": "anunciado",
+    "pron": "anAUnst",
+    "freq": 1
+  },
+  {
+    "en": "approved",
+    "es": "aprobado",
+    "pron": "aprUvd",
+    "freq": 1
+  },
+  {
+    "en": "argued",
+    "es": "discutido",
+    "pron": "Argiud",
+    "freq": 1
+  },
+  {
+    "en": "arranged",
+    "es": "arreglado",
+    "pron": "erEInyd",
+    "freq": 1
+  },
+  {
+    "en": "arrayed",
+    "es": "desplegado",
+    "pron": "erEId",
+    "freq": 1
+  },
+  {
+    "en": "assigned",
+    "es": "asignado",
+    "pron": "asAInd",
+    "freq": 1
+  },
+  {
+    "en": "attempted",
+    "es": "intentado",
+    "pron": "atEmptid",
+    "freq": 1
+  },
+  {
+    "en": "automated",
+    "es": "automatizado",
+    "pron": "Otameitid",
+    "freq": 1
+  },
+  {
+    "en": "awarded",
+    "es": "otorgado",
+    "pron": "auOrdid",
+    "freq": 1
+  },
+  {
+    "en": "bailed",
+    "es": "abandonado (huyó)",
+    "pron": "bEIld",
+    "freq": 1
+  },
+  {
+    "en": "banded",
+    "es": "agrupado",
+    "pron": "bAndid",
+    "freq": 1
+  },
+  {
+    "en": "barked",
+    "es": "ladrado",
+    "pron": "bArkt",
+    "freq": 1
+  },
+  {
+    "en": "bearded",
+    "es": "barbado",
+    "pron": "bIrdad",
+    "freq": 1
+  },
+  {
+    "en": "blamed",
+    "es": "culpado",
+    "pron": "blEImd",
+    "freq": 1
+  },
+  {
+    "en": "blanketed",
+    "es": "cubierto",
+    "pron": "blAngkatid",
+    "freq": 1
+  },
+  {
+    "en": "blocked",
+    "es": "bloqueado",
+    "pron": "blAkt",
+    "freq": 1
+  },
+  {
+    "en": "bolted",
+    "es": "salido corriendo",
+    "pron": "bOUltad",
+    "freq": 1
+  },
+  {
+    "en": "booted",
+    "es": "iniciado (arrancado)",
+    "pron": "bUtid",
+    "freq": 1
+  },
+  {
+    "en": "borrowed",
+    "es": "prestado (tomado)",
+    "pron": "bAroud",
+    "freq": 1
+  },
+  {
+    "en": "bothered",
+    "es": "molestado",
+    "pron": "bAderd",
+    "freq": 1
+  },
+  {
+    "en": "bottled",
+    "es": "embotellado",
+    "pron": "bAtald",
+    "freq": 1
+  },
+  {
+    "en": "brushed",
+    "es": "cepillado",
+    "pron": "brAsht",
+    "freq": 1
+  },
+  {
+    "en": "buckled",
+    "es": "abrochado",
+    "pron": "bAkald",
+    "freq": 1
+  },
+  {
+    "en": "burned",
+    "es": "quemado",
+    "pron": "bERnd",
+    "freq": 1
+  },
+  {
+    "en": "carpeted",
+    "es": "alfombrado",
+    "pron": "kArpatid",
+    "freq": 1
+  },
+  {
+    "en": "centered",
+    "es": "centrado",
+    "pron": "sEnterd",
+    "freq": 1
+  },
+  {
+    "en": "changed",
+    "es": "cambiado",
+    "pron": "chEInyd",
+    "freq": 1
+  },
+  {
+    "en": "checked",
+    "es": "revisado",
+    "pron": "chEkt",
+    "freq": 1
+  },
+  {
+    "en": "civilized",
+    "es": "civilizado",
+    "pron": "sIvalaisd",
+    "freq": 1
+  },
+  {
+    "en": "clambered",
+    "es": "trepado",
+    "pron": "klAmberd",
+    "freq": 1
+  },
+  {
+    "en": "clogged",
+    "es": "atascado",
+    "pron": "klOgd",
+    "freq": 1
+  },
+  {
+    "en": "coded",
+    "es": "programado",
+    "pron": "kOUdid",
+    "freq": 1
+  },
+  {
+    "en": "collected",
+    "es": "recolectado",
+    "pron": "kalEktad",
+    "freq": 1
+  },
+  {
+    "en": "competed",
+    "es": "competido",
+    "pron": "kampItid",
+    "freq": 1
+  },
+  {
+    "en": "comprised",
+    "es": "compuesto (de)",
+    "pron": "kamprAIsd",
+    "freq": 1
+  },
+  {
+    "en": "concealed",
+    "es": "ocultado",
+    "pron": "kansIld",
+    "freq": 1
+  },
+  {
+    "en": "confided",
+    "es": "confiado",
+    "pron": "kanfAIdid",
+    "freq": 1
+  },
+  {
+    "en": "connected",
+    "es": "conectado",
+    "pron": "kanEktid",
+    "freq": 1
+  },
+  {
+    "en": "constructed",
+    "es": "construido",
+    "pron": "kanstrAktad",
+    "freq": 1
+  },
+  {
+    "en": "contained",
+    "es": "contenido",
+    "pron": "kantEInd",
+    "freq": 1
+  },
+  {
+    "en": "cooked",
+    "es": "cocinado",
+    "pron": "kUkt",
+    "freq": 1
+  },
+  {
+    "en": "copied",
+    "es": "copiado",
+    "pron": "kApid",
+    "freq": 1
+  },
+  {
+    "en": "corrugated",
+    "es": "ondulado",
+    "pron": "kOrageitid",
+    "freq": 1
+  },
+  {
+    "en": "cracked",
+    "es": "agrietado",
+    "pron": "krAkt",
+    "freq": 1
+  },
+  {
+    "en": "creaked",
+    "es": "crujido",
+    "pron": "krIkt",
+    "freq": 1
+  },
+  {
+    "en": "cropped",
+    "es": "recortado",
+    "pron": "krApt",
+    "freq": 1
+  },
+  {
+    "en": "crossed",
+    "es": "cruzado",
+    "pron": "krOst",
+    "freq": 1
+  },
+  {
+    "en": "crowded",
+    "es": "abarrotado",
+    "pron": "krAUdad",
+    "freq": 1
+  },
+  {
+    "en": "crumpled",
+    "es": "arrugado",
+    "pron": "krAmpald",
+    "freq": 1
+  },
+  {
+    "en": "crunched",
+    "es": "triturado",
+    "pron": "krAncht",
+    "freq": 1
+  },
+  {
+    "en": "curled",
+    "es": "rizado",
+    "pron": "kERld",
+    "freq": 1
+  },
+  {
+    "en": "darkened",
+    "es": "oscurecido",
+    "pron": "dArkand",
+    "freq": 1
+  },
+  {
+    "en": "decorated",
+    "es": "decorado",
+    "pron": "dEkereitid",
+    "freq": 1
+  },
+  {
+    "en": "deemed",
+    "es": "considerado",
+    "pron": "dImd",
+    "freq": 1
+  },
+  {
+    "en": "defined",
+    "es": "definido",
+    "pron": "difAInd",
+    "freq": 1
+  },
+  {
+    "en": "deflated",
+    "es": "desinflado",
+    "pron": "diflEItid",
+    "freq": 1
+  },
+  {
+    "en": "depicted",
+    "es": "representado",
+    "pron": "dipIktad",
+    "freq": 1
+  },
+  {
+    "en": "deteriorated",
+    "es": "deteriorado",
+    "pron": "ditIriereitid",
+    "freq": 1
+  },
+  {
+    "en": "determined",
+    "es": "determinado",
+    "pron": "ditERmand",
+    "freq": 1
+  },
+  {
+    "en": "developed",
+    "es": "desarrollado",
+    "pron": "divElapt",
+    "freq": 1
+  },
+  {
+    "en": "differed",
+    "es": "diferido",
+    "pron": "dIferd",
+    "freq": 1
+  },
+  {
+    "en": "disappeared",
+    "es": "desaparecido",
+    "pron": "disapIrd",
+    "freq": 1
+  },
+  {
+    "en": "discarded",
+    "es": "descartado",
+    "pron": "diskArdid",
+    "freq": 1
+  },
+  {
+    "en": "discolored",
+    "es": "decolorado",
+    "pron": "diskAlerd",
+    "freq": 1
+  },
+  {
+    "en": "disguised",
+    "es": "disfrazado",
+    "pron": "disgAIsd",
+    "freq": 1
+  },
+  {
+    "en": "disgusted",
+    "es": "asqueado",
+    "pron": "disgAstad",
+    "freq": 1
+  },
+  {
+    "en": "divided",
+    "es": "dividido",
+    "pron": "divAIdid",
+    "freq": 1
+  },
+  {
+    "en": "dressed",
+    "es": "vestido",
+    "pron": "drEst",
+    "freq": 1
+  },
+  {
+    "en": "ducked",
+    "es": "agachado",
+    "pron": "dAkt",
+    "freq": 1
+  },
+  {
+    "en": "earned",
+    "es": "ganado",
+    "pron": "ERnd",
+    "freq": 1
+  },
+  {
+    "en": "embedded",
+    "es": "incrustado",
+    "pron": "embEdid",
+    "freq": 1
+  },
+  {
+    "en": "emerged",
+    "es": "emergido",
+    "pron": "imERyd",
+    "freq": 1
+  },
+  {
+    "en": "emptied",
+    "es": "vaciado",
+    "pron": "Emptid",
+    "freq": 1
+  },
+  {
+    "en": "encountered",
+    "es": "encontrado",
+    "pron": "inkAUnterd",
+    "freq": 1
+  },
+  {
+    "en": "encouraged",
+    "es": "animado",
+    "pron": "enkERiyd",
+    "freq": 1
+  },
+  {
+    "en": "encrusted",
+    "es": "incrustado",
+    "pron": "enkrAstid",
+    "freq": 1
+  },
+  {
+    "en": "encrypted",
+    "es": "encriptado",
+    "pron": "enkrIptid",
+    "freq": 1
+  },
+  {
+    "en": "enforced",
+    "es": "impuesto",
+    "pron": "enfOrst",
+    "freq": 1
+  },
+  {
+    "en": "enjoyed",
+    "es": "disfrutado",
+    "pron": "enyOId",
+    "freq": 1
+  },
+  {
+    "en": "erased",
+    "es": "borrado",
+    "pron": "irEIst",
+    "freq": 1
+  },
+  {
+    "en": "expected",
+    "es": "esperado",
+    "pron": "ikspEktad",
+    "freq": 1
+  },
+  {
+    "en": "explained",
+    "es": "explicado",
+    "pron": "iksplEInd",
+    "freq": 1
+  },
+  {
+    "en": "extended",
+    "es": "extendido",
+    "pron": "ikstEndad",
+    "freq": 1
+  },
+  {
+    "en": "faded",
+    "es": "desvanecido",
+    "pron": "fEIdad",
+    "freq": 1
+  },
+  {
+    "en": "fancied",
+    "es": "imaginado",
+    "pron": "fAnsid",
+    "freq": 1
+  },
+  {
+    "en": "fed",
+    "es": "alimentado",
+    "pron": "fEd",
+    "freq": 1
+  },
+  {
+    "en": "feigned",
+    "es": "fingido",
+    "pron": "fEInd",
+    "freq": 1
+  },
+  {
+    "en": "fixed",
+    "es": "arreglado",
+    "pron": "fIkst",
+    "freq": 1
+  },
+  {
+    "en": "fled",
+    "es": "huido",
+    "pron": "flEd",
+    "freq": 1
+  },
+  {
+    "en": "flexed",
+    "es": "flexionado",
+    "pron": "flEkst",
+    "freq": 1
+  },
+  {
+    "en": "flinched",
+    "es": "estremecido",
+    "pron": "flIncht",
+    "freq": 1
+  },
+  {
+    "en": "flipped",
+    "es": "volteado",
+    "pron": "flIpt",
+    "freq": 1
+  },
+  {
+    "en": "floated",
+    "es": "flotado",
+    "pron": "flOUtad",
+    "freq": 1
+  },
+  {
+    "en": "focused",
+    "es": "enfocado",
+    "pron": "fOUkast",
+    "freq": 1
+  },
+  {
+    "en": "frustrated",
+    "es": "frustrado",
+    "pron": "frAstreitad",
+    "freq": 1
+  },
+  {
+    "en": "gathered",
+    "es": "reunido",
+    "pron": "gAderd",
+    "freq": 1
+  },
+  {
+    "en": "generated",
+    "es": "generado",
+    "pron": "yEnereitad",
+    "freq": 1
+  },
+  {
+    "en": "glared",
+    "es": "mirado con furia",
+    "pron": "glErd",
+    "freq": 1
+  },
+  {
+    "en": "graduated",
+    "es": "graduado",
+    "pron": "grAyueitid",
+    "freq": 1
+  },
+  {
+    "en": "guarded",
+    "es": "custodiado",
+    "pron": "gArdad",
+    "freq": 1
+  },
+  {
+    "en": "haired",
+    "es": "con pelo",
+    "pron": "jErd",
+    "freq": 1
+  },
+  {
+    "en": "hallowed",
+    "es": "santificado",
+    "pron": "jAloud",
+    "freq": 1
+  },
+  {
+    "en": "handed",
+    "es": "entregado",
+    "pron": "jAndad",
+    "freq": 1
+  },
+  {
+    "en": "hassled",
+    "es": "fastidiado",
+    "pron": "jAsald",
+    "freq": 1
+  },
+  {
+    "en": "hated",
+    "es": "odiado",
+    "pron": "jEItad",
+    "freq": 1
+  },
+  {
+    "en": "homogenized",
+    "es": "homogeneizado",
+    "pron": "joumAyanaisd",
+    "freq": 1
+  },
+  {
+    "en": "hooked",
+    "es": "enganchado",
+    "pron": "jUkt",
+    "freq": 1
+  },
+  {
+    "en": "hopped",
+    "es": "saltado",
+    "pron": "jApt",
+    "freq": 1
+  },
+  {
+    "en": "housed",
+    "es": "alojado",
+    "pron": "jAUsd",
+    "freq": 1
+  },
+  {
+    "en": "hunched",
+    "es": "encorvado",
+    "pron": "jAncht",
+    "freq": 1
+  },
+  {
+    "en": "hurled",
+    "es": "lanzado",
+    "pron": "jERld",
+    "freq": 1
+  },
+  {
+    "en": "included",
+    "es": "incluido",
+    "pron": "inklUdad",
+    "freq": 1
+  },
+  {
+    "en": "initiated",
+    "es": "iniciado",
+    "pron": "inIshieitad",
+    "freq": 1
+  },
+  {
+    "en": "insulted",
+    "es": "insultado",
+    "pron": "insAltid",
+    "freq": 1
+  },
+  {
+    "en": "interjected",
+    "es": "interrumpido",
+    "pron": "interyEktid",
+    "freq": 1
+  },
+  {
+    "en": "introduced",
+    "es": "presentado",
+    "pron": "intradUst",
+    "freq": 1
+  },
+  {
+    "en": "isolated",
+    "es": "aislado",
+    "pron": "AIsaleitad",
+    "freq": 1
+  },
+  {
+    "en": "jolted",
+    "es": "sacudido",
+    "pron": "yOUltid",
+    "freq": 1
+  },
+  {
+    "en": "jumped",
+    "es": "saltado",
+    "pron": "yAmpt",
+    "freq": 1
+  },
+  {
+    "en": "killed",
+    "es": "matado",
+    "pron": "kIld",
+    "freq": 1
+  },
+  {
+    "en": "knocked",
+    "es": "golpeado (a la puerta)",
+    "pron": "nAkt",
+    "freq": 1
+  },
+  {
+    "en": "labeled",
+    "es": "etiquetado",
+    "pron": "lEIbald",
+    "freq": 1
+  },
+  {
+    "en": "leaned",
+    "es": "apoyado",
+    "pron": "lInd",
+    "freq": 1
+  },
+  {
+    "en": "lined",
+    "es": "alineado",
+    "pron": "lAInd",
+    "freq": 1
+  },
+  {
+    "en": "linked",
+    "es": "vinculado",
+    "pron": "lIngkt",
+    "freq": 1
+  },
+  {
+    "en": "loathed",
+    "es": "detestado",
+    "pron": "lOUdd",
+    "freq": 1
+  },
+  {
+    "en": "located",
+    "es": "ubicado",
+    "pron": "lOUkeitad",
+    "freq": 1
+  },
+  {
+    "en": "lorded",
+    "es": "comportado con superioridad",
+    "pron": "LORdid",
+    "freq": 1
+  },
+  {
+    "en": "mailed",
+    "es": "enviado por correo",
+    "pron": "mEIld",
+    "freq": 1
+  },
+  {
+    "en": "malnourished",
+    "es": "desnutrido",
+    "pron": "malnERisht",
+    "freq": 1
+  },
+  {
+    "en": "mapped",
+    "es": "mapeado",
+    "pron": "mApt",
+    "freq": 1
+  },
+  {
+    "en": "mastered",
+    "es": "dominado",
+    "pron": "mAsterd",
+    "freq": 1
+  },
+  {
+    "en": "matched",
+    "es": "combinado",
+    "pron": "mAcht",
+    "freq": 1
+  },
+  {
+    "en": "melted",
+    "es": "derretido",
+    "pron": "mEltad",
+    "freq": 1
+  },
+  {
+    "en": "memorized",
+    "es": "memorizado",
+    "pron": "mEmeraisd",
+    "freq": 1
+  },
+  {
+    "en": "messed",
+    "es": "desordenado",
+    "pron": "mEst",
+    "freq": 1
+  },
+  {
+    "en": "mired",
+    "es": "atascado",
+    "pron": "mAIrd",
+    "freq": 1
+  },
+  {
+    "en": "modified",
+    "es": "modificado",
+    "pron": "mAdafaid",
+    "freq": 1
+  },
+  {
+    "en": "monetized",
+    "es": "monetizado",
+    "pron": "MAnitaisd",
+    "freq": 1
+  },
+  {
+    "en": "muffled",
+    "es": "amortiguado",
+    "pron": "mAfald",
+    "freq": 1
+  },
+  {
+    "en": "muttered",
+    "es": "murmurado",
+    "pron": "mAterd",
+    "freq": 1
+  },
+  {
+    "en": "narrowed",
+    "es": "estrechado",
+    "pron": "nEroud",
+    "freq": 1
+  },
+  {
+    "en": "nodded",
+    "es": "asentido (con la cabeza)",
+    "pron": "nAdad",
+    "freq": 1
+  },
+  {
+    "en": "obtained",
+    "es": "obtenido",
+    "pron": "abtEInd",
+    "freq": 1
+  },
+  {
+    "en": "ordered",
+    "es": "ordenado",
+    "pron": "Orderd",
+    "freq": 1
+  },
+  {
+    "en": "orphaned",
+    "es": "dejado huérfano",
+    "pron": "Orfand",
+    "freq": 1
+  },
+  {
+    "en": "outdated",
+    "es": "anticuado",
+    "pron": "AUtdeitid",
+    "freq": 1
+  },
+  {
+    "en": "overcrowded",
+    "es": "superpoblado",
+    "pron": "OUverkraudid",
+    "freq": 1
+  },
+  {
+    "en": "overpriced",
+    "es": "sobrevalorado",
+    "pron": "OUverpraist",
+    "freq": 1
+  },
+  {
+    "en": "overturned",
+    "es": "volcado",
+    "pron": "OUverternd",
+    "freq": 1
+  },
+  {
+    "en": "painted",
+    "es": "pintado",
+    "pron": "pEIntid",
+    "freq": 1
+  },
+  {
+    "en": "paneled",
+    "es": "revestido con paneles",
+    "pron": "pAnald",
+    "freq": 1
+  },
+  {
+    "en": "parked",
+    "es": "estacionado",
+    "pron": "pArkt",
+    "freq": 1
+  },
+  {
+    "en": "pasted",
+    "es": "pegado",
+    "pron": "pEIstid",
+    "freq": 1
+  }
+];
+
+</script>
+<script>
+(function(){
+  const canvas = document.getElementById('stage');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const songInput = document.getElementById('songInput');
+  const voiceSelect = document.getElementById('voiceSelect');
+  const bpmInput = document.getElementById('bpmInput');
+  const beatsInput = document.getElementById('beatsInput');
+  const playBtn = document.getElementById('playBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const statusEl = document.getElementById('status');
+  const counterEl = document.getElementById('counter');
+
+  let audioCtx = null;
+  let songBuffer = null;
+  let songSourceNode = null;
+  let gainNode = null;
+
+  let voices = [];
+  function loadVoices(){
+    voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+    if (voices.length === 0) voices = speechSynthesis.getVoices();
+    voiceSelect.innerHTML = '';
+    voices.forEach((v, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${v.name} (${v.lang})`;
+      voiceSelect.appendChild(opt);
+    });
+  }
+  speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+
+  songInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    stopPlayback();
+    stopSong();
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      songBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      if (!gainNode){
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.5;
+        gainNode.connect(audioCtx.destination);
+      }
+      state.elapsedBeforePause = 0;
+      statusEl.innerHTML = `Música cargada: <b>${file.name}</b> (${Math.round(songBuffer.duration)} s). Dale a <b>REPRODUCIR</b>.`;
+    } catch(err){
+      songBuffer = null;
+      statusEl.innerHTML = 'No se pudo decodificar el audio. Prueba con un archivo <b>mp3/wav</b> válido.';
+      console.error(err);
+    }
+  });
+
+  function stopSong(){
+    if (songSourceNode){
+      try { songSourceNode.stop(); } catch(e){}
+      songSourceNode.disconnect();
+      songSourceNode = null;
+    }
+  }
+
+  let state = {
+    running:false,
+    startTime:0,
+    pausedAt:0,
+    elapsedBeforePause:0,
+    idx:0,
+  };
+
+  function getTiming(){
+    const bpm = parseFloat(bpmInput.value) || 129;
+    const beats = parseFloat(beatsInput.value) || 2;
+    const beatDur = 60 / bpm;
+    const screenDur = beatDur * beats;
+    return { screenDur, wordDur: screenDur * 3 };
+  }
+
+  function drawScanlines(){
+    ctx.save();
+    ctx.globalAlpha = 0.06;
+    ctx.fillStyle = '#000';
+    for (let y = 0; y < H; y += 4){
+      ctx.fillRect(0, y, W, 2);
+    }
+    ctx.restore();
+  }
+
+  function drawScreen(word, stage, idx){
+    // stage: 0 = english, 1 = spanish, 2 = pronunciation
+    const grad = ctx.createRadialGradient(W/2, H*0.35, 100, W/2, H*0.5, W*0.9);
+    grad.addColorStop(0, '#1c0a3a');
+    grad.addColorStop(1, '#07030f');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const configs = [
+      { text: word.en,   color:'#ffffff', glow:'#ff2fd0', label:'ENGLISH' },
+      { text: word.es,   color:'#ffe94a', glow:'#ffb100', label:'ESPAÑOL' },
+      { text: word.pron, color:'#2ff6ff', glow:'#2ff6ff', label:'PRONUNCIACIÓN' },
+    ];
+    const cfg = configs[stage];
+
+    ctx.font = '600 28px "Space Mono", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillText(cfg.label, W/2, H*0.32);
+
+    let fontSize = 130;
+    ctx.font = `700 ${fontSize}px "Space Mono", monospace`;
+    while (ctx.measureText(cfg.text).width > W*0.9 && fontSize > 40){
+      fontSize -= 4;
+      ctx.font = `700 ${fontSize}px "Space Mono", monospace`;
+    }
+
+    ctx.shadowColor = cfg.glow;
+    ctx.shadowBlur = 40;
+    ctx.fillStyle = cfg.color;
+    ctx.fillText(cfg.text, W/2, H*0.5);
+    ctx.shadowBlur = 0;
+
+    // progress dots for the 3 stages
+    const dotY = H*0.62;
+    const spacing = 34;
+    for (let i=0;i<3;i++){
+      ctx.beginPath();
+      ctx.arc(W/2 + (i-1)*spacing, dotY, 8, 0, Math.PI*2);
+      ctx.fillStyle = i === stage ? '#ffffff' : 'rgba(255,255,255,0.2)';
+      ctx.fill();
+    }
+
+    drawScanlines();
+
+    ctx.font = '600 22px "Space Mono", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillText(`WORD ${idx+1} / ${WORD_LIST.length}`, W/2, H*0.92);
+  }
+
+  let lastSpokenIdx = -1;
+  let lastSpokenStage = -1;
+
+  function speakIfNeeded(word, stage, idx){
+    if (stage === 2 && (idx !== lastSpokenIdx || lastSpokenStage !== 2)){
+      lastSpokenIdx = idx;
+      lastSpokenStage = 2;
+      const utter = new SpeechSynthesisUtterance(word.en);
+      const vi = parseInt(voiceSelect.value || '0', 10);
+      if (voices[vi]) utter.voice = voices[vi];
+      utter.rate = 0.85;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utter);
+
+      if (gainNode){
+        const now = audioCtx.currentTime;
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+        gainNode.gain.linearRampToValueAtTime(0.12, now + 0.15);
+        gainNode.gain.linearRampToValueAtTime(0.5, now + 1.0);
+      }
+    }
+    if (stage !== 2){
+      lastSpokenStage = stage;
+    }
+  }
+
+  function loop(ts){
+    if (!state.running) return;
+    const { screenDur, wordDur } = getTiming();
+    const elapsed = state.elapsedBeforePause + (performance.now() - state.startTime)/1000;
+
+    const idx = Math.floor(elapsed / wordDur);
+    if (idx >= WORD_LIST.length){
+      stopPlayback();
+      statusEl.innerHTML = '<b>¡Terminado!</b> Se recorrieron las ' + WORD_LIST.length + ' palabras.';
+      return;
+    }
+    const within = elapsed - idx*wordDur;
+    const stage = Math.min(2, Math.floor(within / screenDur));
+
+    drawScreen(WORD_LIST[idx], stage, idx);
+    speakIfNeeded(WORD_LIST[idx], stage, idx);
+    counterEl.textContent = String(idx+1).padStart(3,'0') + ' / ' + WORD_LIST.length;
+
+    requestAnimationFrame(loop);
+  }
+
+  function startPlayback(){
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx.resume();
+    if (songBuffer){
+      stopSong();
+      songSourceNode = audioCtx.createBufferSource();
+      songSourceNode.buffer = songBuffer;
+      songSourceNode.loop = true;
+      if (!gainNode){
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.5;
+        gainNode.connect(audioCtx.destination);
+      }
+      songSourceNode.connect(gainNode);
+      songSourceNode.start(0, state.elapsedBeforePause % songBuffer.duration);
+    }
+    state.running = true;
+    state.startTime = performance.now();
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+    const songMsg = songBuffer ? 'con tu música' : 'sin música (sube un archivo de audio para escucharla)';
+    statusEl.innerHTML = 'Reproduciendo ' + songMsg + '… si vas a grabar, ¡empieza tu grabación de pantalla justo ahora!';
+    requestAnimationFrame(loop);
+  }
+
+  function stopPlayback(){
+    state.running = false;
+    stopSong();
+    speechSynthesis.cancel();
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+  }
+
+  playBtn.addEventListener('click', () => {
+    startPlayback();
+  });
+
+  pauseBtn.addEventListener('click', () => {
+    const { wordDur } = getTiming();
+    state.elapsedBeforePause += (performance.now() - state.startTime)/1000;
+    stopPlayback();
+    statusEl.textContent = 'Pausado.';
+  });
+
+  resetBtn.addEventListener('click', () => {
+    stopPlayback();
+    state.elapsedBeforePause = 0;
+    lastSpokenIdx = -1;
+    lastSpokenStage = -1;
+    drawScreen(WORD_LIST[0], 0, 0);
+    counterEl.textContent = '000 / ' + WORD_LIST.length;
+    statusEl.textContent = 'Reiniciado.';
+  });
+
+  // initial frame
+  drawScreen(WORD_LIST[0], 0, 0);
+})();
+</script>
+</body>
+</html>
