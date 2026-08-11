@@ -99,6 +99,18 @@
     border-radius:3px;
     text-shadow:0 0 6px rgba(255,233,74,0.7);
   }
+  .stage-controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:14px;
+  }
+  .stage-controls button{
+    font-size:16px;
+    padding:10px 14px;
+    flex:1;
+    max-width:70px;
+  }
 
   .panel{
     background:var(--bg-panel);
@@ -226,6 +238,11 @@
       <div class="counter" id="counter">000 / 235</div>
       <div class="stage-frame">
         <canvas id="stage" width="1080" height="1920"></canvas>
+      </div>
+      <div class="stage-controls">
+        <button class="primary" id="stagePlayBtn" title="Reproducir">▶</button>
+        <button id="stagePauseBtn" disabled title="Pausar">⏸</button>
+        <button id="stageResetBtn" title="Reiniciar">⟲</button>
       </div>
     </div>
 
@@ -2085,6 +2102,9 @@ const WORD_LIST = [
   const resetBtn = document.getElementById('resetBtn');
   const statusEl = document.getElementById('status');
   const counterEl = document.getElementById('counter');
+  const stagePlayBtn = document.getElementById('stagePlayBtn');
+  const stagePauseBtn = document.getElementById('stagePauseBtn');
+  const stageResetBtn = document.getElementById('stageResetBtn');
 
   let audioCtx = null;
   let songBuffer = null;
@@ -2331,8 +2351,7 @@ const WORD_LIST = [
     }
     state.running = true;
     state.startTime = performance.now();
-    playBtn.disabled = true;
-    pauseBtn.disabled = false;
+    syncControls();
     const songMsg = songBuffer ? 'con tu música' : 'sin música (sube un archivo de audio para escucharla)';
     statusEl.innerHTML = 'Reproduciendo ' + songMsg + '… si vas a grabar, ¡empieza tu grabación de pantalla justo ahora!';
     requestAnimationFrame(loop);
@@ -2342,22 +2361,24 @@ const WORD_LIST = [
     state.running = false;
     stopSong();
     flushSpeech();
-    playBtn.disabled = false;
-    pauseBtn.disabled = true;
+    syncControls();
   }
 
-  playBtn.addEventListener('click', () => {
-    startPlayback();
-  });
+  function syncControls(){
+    const playing = state.running;
+    playBtn.disabled = playing;
+    stagePlayBtn.disabled = playing;
+    pauseBtn.disabled = !playing;
+    stagePauseBtn.disabled = !playing;
+  }
 
-  pauseBtn.addEventListener('click', () => {
-    const { wordDur } = getTiming();
+  function pausePlayback(){
     state.elapsedBeforePause += (performance.now() - state.startTime)/1000;
     stopPlayback();
     statusEl.textContent = 'Pausado.';
-  });
+  }
 
-  resetBtn.addEventListener('click', () => {
+  function resetPlayback(){
     stopPlayback();
     state.elapsedBeforePause = 0;
     lastSpokenIdx = -1;
@@ -2365,7 +2386,15 @@ const WORD_LIST = [
     drawScreen(WORD_LIST[0], 0, 0);
     counterEl.textContent = '000 / ' + WORD_LIST.length;
     statusEl.textContent = 'Reiniciado.';
-  });
+  }
+
+  playBtn.addEventListener('click', startPlayback);
+  pauseBtn.addEventListener('click', pausePlayback);
+  resetBtn.addEventListener('click', resetPlayback);
+  stagePlayBtn.addEventListener('click', startPlayback);
+  stagePauseBtn.addEventListener('click', pausePlayback);
+  stageResetBtn.addEventListener('click', resetPlayback);
+  syncControls();
 
   // initial frame
   drawScreen(WORD_LIST[0], 0, 0);
